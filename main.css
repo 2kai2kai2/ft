@@ -42,6 +42,18 @@ article {
 
 #description_div {
     margin: 0 1em;
+    & #more_info_container {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.4s linear;
+        &.open {
+            grid-template-rows: 1fr;
+        }
+        &>#more_info {
+            overflow-y: hidden;
+            margin: 0;
+        }
+    }
 }
 
 /* ======================================== */

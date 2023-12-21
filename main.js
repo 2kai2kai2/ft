@@ -7,6 +7,14 @@ const id_param = params.get("id")
  * @property {Blob} content
  */
 
+/** @type {HTMLDivElement} */
+const read_more_div = document.getElementById("more_info_container");
+/** @type {HTMLParagraphElement} */
+const read_more_p = document.getElementById("more_info");
+function click_read_more() {
+    read_more_div.classList.toggle("open");
+}
+
 if (id_param) {
     // RECEIVER
     /** @type {HTMLDivElement} */
