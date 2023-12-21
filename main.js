@@ -14,34 +14,39 @@ if (id_param) {
     receiver_div.hidden = false;
     var finished = false;
 
-    function set_receiver_error(message = "") {
+    function clear_receiver_options() {
         for (el of document.getElementsByClassName("receiver_display_option")) {
             el.hidden = true;
         }
-        document.getElementById("receiver_error_screen").hidden = false;
+    }
+
+    function set_receiver_error(message = "") {
+        clear_receiver_options()
         if ((typeof message) != "string" || message.length == 0) {
             document.getElementById("error_message").textContent = "(no error message)";
         } else {
             document.getElementById("error_message").textContent = message;
         }
+        document.getElementById("receiver_error_screen").hidden = false;
     }
 
     var peer = new Peer();
-    peer.on("close", () => {console.log("peer closed.");});
+    peer.on("close", () => { console.log("peer closed."); });
     peer.on("error", (err) => {
         set_receiver_error(err.type)
-        console.log("peer errored:", err);
+        console.log("peer.js errored:", err);
     });
     peer.on("open", () => {
-        console.log("peer opened");
+        console.log("peer.js identity established.");
         var conn = peer.connect(id_param);
         console.log(conn);
-        conn.on("open", () => {console.log("connection opened");});
-        conn.on("close", () => {console.log("connection closed.");});
+        conn.on("open", () => { console.log("connection opened"); });
+        conn.on("close", () => { console.log("connection closed."); });
         conn.on("error", (err) => {
             if (!finished) {
                 set_receiver_error()
             }
+            console.error("Potential Post-Receive Error:", err)
         });
         conn.on("data", (/** @type {FileTransfer} */ data) => {
             const url = URL.createObjectURL(new Blob([data.content]));
@@ -58,6 +63,10 @@ if (id_param) {
                 })
             );
             document.body.removeChild(a);
+
+            clear_receiver_options()
+            document.getElementById("receiver_completed").hidden = false;
+            conn.close()
         });
     });
 } else {
@@ -113,7 +122,7 @@ if (id_param) {
         start.disabled = true;
         file_input.disabled = true;
         let file = file_input.files.item(0);
-        console.log(file);
+        console.log("Sending file: ", file);
 
         var peer = new Peer();
         peer.once("open", (id) => {
@@ -121,15 +130,16 @@ if (id_param) {
 
             peer.on("connection", (conn) => {
                 console.log(conn);
-                conn.on("data", (data) => {console.log("received data??");});
-                conn.on("close", () => {console.log("connection closed.");});
-                conn.on("error", (err) => {console.log("connection errored:", err);});
-                // TODO: update the ui
+                conn.on("close", () => { console.log(`connection with ${conn.peer} closed.`); });
+                conn.on("error", (err) => {
+                    // TODO: should we report that (one of) the receiver connections failed?
+                    console.error("connection errored:", err);
+                });
+                // TODO: implement connection count ui
                 conn.once("open", () => {
                     console.log("sending to", conn.connectionId)
-                    conn.send({"name": file.name, "content": file});
+                    conn.send({ "name": file.name, "content": file });
                     console.log("done");
-                    //conn.close();
                 });
             });
         });
