@@ -98,6 +98,7 @@ if (id_param) {
             start.disabled = false;
         }
     }
+
     /** @param {String} uuid */
     function set_download_link(uuid) {
         const link = document.baseURI + "?id=" + uuid;
@@ -112,6 +113,19 @@ if (id_param) {
 
         start.hidden = true;
         link_div.hidden = false;
+    }
+
+    function click_copy_link() {
+        navigator.clipboard.writeText(document.getElementById('link_copy').textContent).then(
+            () => {
+                const icon = document.getElementById("link_copy_icon");
+                icon.classList.replace("fa-clone", "fa-check");
+                // TODO: uncheck if things change?
+            },
+            () => {
+                console.error("Failed to copy to clipboard.");
+            }
+        );
     }
 
     function start_connections() {
@@ -137,7 +151,7 @@ if (id_param) {
                 });
                 // TODO: implement connection count ui
                 conn.once("open", () => {
-                    console.log("sending to", conn.connectionId)
+                    console.log("sending to", conn.connectionId);
                     conn.send({ "name": file.name, "content": file });
                     console.log("done");
                 });
