@@ -20,6 +20,17 @@ footer {
     padding: 1em;
     background: rgb(15, 14, 26);
     color: white;
+    &>#footer_links_div {
+        display: flex;
+        justify-content: center;
+        &>a {
+            color: white;
+            margin: 0.2em 0.5em;
+        }
+    }
+    &>p {
+        margin: 0.5em 0;
+    }
 }
 
 article {
@@ -27,6 +38,10 @@ article {
 
     display: flex;
     flex-direction: column;
+}
+
+#description_div {
+    margin: 0 1em;
 }
 
 /* ======================================== */
