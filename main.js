@@ -22,6 +22,15 @@ if (id_param) {
     receiver_div.hidden = false;
     var finished = false;
 
+    /** @type {HTMLDivElement} */
+    const log_div = document.getElementById("fetcher_log");
+
+    function add_to_fetcher_log(text) {
+        let el = document.createElement("p");
+        el.textContent = text;
+        log_div.append(el);
+    }
+
     function clear_receiver_options() {
         for (el of document.getElementsByClassName("receiver_display_option")) {
             el.hidden = true;
@@ -38,31 +47,41 @@ if (id_param) {
         document.getElementById("receiver_error_screen").hidden = false;
     }
 
+    add_to_fetcher_log("Starting...")
     var peer = new Peer();
-    peer.on("close", () => { console.log("peer closed."); });
+    peer.on("close", () => {
+        add_to_fetcher_log("Closed p2p identity");
+    });
     peer.on("error", (err) => {
         set_receiver_error(err.type)
-        console.log("peer.js errored:", err);
+        add_to_fetcher_log(`p2p identity error occurred: ${err.type}`);
     });
     peer.on("open", () => {
-        console.log("peer.js identity established.");
+        add_to_fetcher_log("Identity established, trying to connect...");
         var conn = peer.connect(id_param);
-        console.log(conn);
-        conn.on("open", () => { console.log("connection opened"); });
-        conn.on("close", () => { console.log("connection closed."); });
+
+        conn.on("open", () => {
+            add_to_fetcher_log("Connection established.");
+        });
+        conn.on("close", () => {
+            add_to_fetcher_log("Connection closed.");
+        });
         conn.on("error", (err) => {
             if (!finished) {
+                add_to_fetcher_log(`Connection error occurred: ${err.type}`);
                 set_receiver_error()
             }
             console.error("Potential Post-Receive Error:", err)
         });
         conn.on("data", (/** @type {FileTransfer} */ data) => {
+            add_to_fetcher_log("Data received...");
             const url = URL.createObjectURL(new Blob([data.content]));
             const a = document.createElement("a");
             a.href = url;
             a.download = data.name ?? "download";
             document.body.appendChild(a);
 
+            add_to_fetcher_log("Saving file...");
             a.dispatchEvent(
                 new MouseEvent('click', {
                     bubbles: true,
