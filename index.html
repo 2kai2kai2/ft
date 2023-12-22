@@ -52,13 +52,16 @@
             </div>
         </div>
         <div id="sender" hidden>
-            <label for="file_input">
+            <div id="dragover_overlay">
+                <h3>drop file</h3>
+            </div>
+            <label id="file_input_label" for="file_input">
                 <i class="fa-solid fa-upload"></i>
                 &nbsp;
-                <p id="file_label_name">Select File<br>or drag here</p>
+                <p id="file_label_name">Select File</p>
             </label>
             <input type="file" id="file_input" />
-            <input type="button" value="Get Link" id="sender_start" onclick="start_connections();" disabled />
+            <input type="button" value="Generate Link" id="sender_start" onclick="start_connections();" disabled />
             <div id="link_div" hidden>
                 <div id="link_copy_box" onclick="click_copy_link();">
                     <p id="link_copy">not yet loaded</p>

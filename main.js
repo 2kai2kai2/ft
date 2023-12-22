@@ -80,7 +80,7 @@ if (id_param) {
         var conn = peer.connect(id_param);
 
         conn.on("open", () => {
-            add_to_fetcher_log("Connection established.");
+            add_to_fetcher_log("Connection established...");
         });
         conn.on("close", () => {
             add_to_fetcher_log("Connection closed.");
@@ -130,12 +130,19 @@ if (id_param) {
     /** @type {HTMLDivElement} */
     const link_div = document.getElementById("link_div");
 
-    file_input.onchange = (ev) => {
-        if (file_input.files.length === 0) {
+    // Selected file can either be from file input, or from drag-and-drop
+    /** @type {File?} */
+    var selected_file = null;
+
+    /** @param {File} [file]  */
+    function new_selected_file(file) {
+        if (!file) {
+            selected_file = null;
             file_label_name.textContent = "Select File";
             start.disabled = true;
         } else {
-            let name = file_input.files.item(0).name;
+            selected_file = file;
+            let name = file.name;
             if (name.length > 40) {
                 file_label_name.textContent = name.substring(0, 40) + "...";
             } else {
@@ -143,6 +150,64 @@ if (id_param) {
             }
             start.disabled = false;
         }
+    }
+
+    file_input.onchange = () => {
+        new_selected_file(file_input.files.item(0));
+    }
+
+    /** @type {HTMLDivElement} */
+    const drag_overlay = document.getElementById("dragover_overlay");
+    document.body.ondragenter = (ev) => {
+        if (file_input.disabled) {
+            return
+        }
+        console.log("dragenter", ev.target);
+        if (ev.dataTransfer.types.includes("Files")) {
+            drag_overlay.classList.add("active");
+            ev.preventDefault();
+        }
+    }
+    // if we any drag leave, then set a timeout
+    // if we have a dragover event before then, that means we didn't actually leave
+    /** @type {number | null} */
+    var drag_leave_timeout = null;
+
+    document.body.ondragleave = (ev) => {
+        console.log(ev.target.tagName);
+        if (file_input.disabled) {
+            return
+        }
+        console.log("dragleave", ev.target);
+        if (drag_leave_timeout === null) {
+            drag_leave_timeout = setTimeout(() => {
+                drag_overlay.classList.remove("active");
+            }, 100);
+            // I really hope this is enough time
+        }
+    }
+    document.body.ondragover = (ev) => {
+        if (file_input.disabled) {
+            return
+        }
+        if (ev.dataTransfer.types.includes("Files")) {
+            clearTimeout(drag_leave_timeout); // does nothing if already null
+            drag_leave_timeout = null;
+            //console.log("dragover", ev.target);
+            drag_overlay.classList.add("active"); // just in case it accidentally got removed
+            ev.preventDefault();
+        }
+    }
+    document.body.ondrop = (ev) => {
+        if (file_input.disabled || ev.dataTransfer.files.length == 0) {
+            return;
+        }
+        let file = ev.dataTransfer.files.item(0);
+        new_selected_file(file);
+        clearTimeout(drag_leave_timeout); // does nothing if already null
+        drag_leave_timeout = null;
+        drag_overlay.classList.remove("active");
+        ev.preventDefault()
     }
 
     /** @param {String} uuid */
@@ -181,7 +246,7 @@ if (id_param) {
         }
         start.disabled = true;
         file_input.disabled = true;
-        let file = file_input.files.item(0);
+        let file = selected_file;
         console.log("Sending file: ", file);
 
         var peer = new Peer();
@@ -208,5 +273,5 @@ if (id_param) {
 
 // insert our base url into all <a> elements with class `site_link`
 for (el of document.getElementsByClassName("site_link")) {
-    el.href = document.baseURI;
+    el.href = document.URL.split("?")[0];
 }

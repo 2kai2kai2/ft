@@ -64,15 +64,45 @@ article {
     align-items: center;
 }
 
+#dragover_overlay {
+    display: none;
+    &.active {
+        display: block;
+    }
+
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-width: 0.3em;
+    border-color: rgba(16, 106, 162, 0.6);
+    border-style: solid;
+    background-color: rgba(16, 106, 162, 0.3);
+    z-index: 1;
+
+    &>h3 {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        translate: -50% -100%;
+        color: rgba(16, 106, 162, 0.6);
+        font-size: 20vh;
+        text-align: center;
+        vertical-align: middle;
+        user-select: none;
+    }
+}
+
 label[for="file_input"] {
     position: static;
-    background-color: rgb(180, 180, 180);
-    border-color: rgb(150, 150, 150);
+    background-color: rgb(220, 220, 220);
+    border-color: rgb(180, 180, 180);
     border-width: 2px;
     border-style: solid;
     border-radius: 10px;
-    width: 20em;
-    height: 12em;
+    width: min(30em, calc(100vw - 2em));
+    height: 16em;
     margin: 10px;
     text-align: center;
     font-size: large;
@@ -83,11 +113,13 @@ label[for="file_input"] {
 
     transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
     &:hover {
-        background-color: rgb(145, 188, 215);
-        border-color: rgb(4, 92, 200);
+        background-color: rgb(200, 200, 200);
+        border-color: rgb(150, 150, 150);
     }
-    &>i {
+    &>* {
         display: inline;
+        color: rgb(29, 29, 29);
+        font-weight: bolder;
     }
 }
 
