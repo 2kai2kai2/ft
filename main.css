@@ -106,20 +106,33 @@ label[for="file_input"] {
     margin: 10px;
     text-align: center;
     font-size: large;
-    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-    &:hover {
-        background-color: rgb(200, 200, 200);
-        border-color: rgb(150, 150, 150);
-    }
+    
+    color: rgb(29, 29, 29);
     &>* {
         display: inline;
-        color: rgb(29, 29, 29);
         font-weight: bolder;
+        transition: font-weight 0.5s linear;
+    }
+    transition: background-color 0.25s ease-in-out, border-color 0.2s ease-in-out, height 0.5s linear, color 0.5s linear;
+    &[disabled] {
+        height: 3em;
+        color: rgb(100, 100, 100);
+        background-color: white;
+        border-color: rgb(210, 210, 210);
+        &>p {
+            font-weight: normal;
+        }
+    }
+
+    &:not([disabled]) {
+        cursor: pointer;
+        &:hover {
+            background-color: rgb(200, 200, 200);
+            border-color: rgb(150, 150, 150);
+        }
     }
 }
 
@@ -183,6 +196,27 @@ label[for="file_input"] {
     align-items: center;
 }
 
+#sender_connections {
+    display: flex;
+    justify-content: space-evenly;
+    width: calc(100% - 2em);
+    border-top-style: solid;
+    border-top-color: lightgray;
+    border-top-width: 1px;
+    &>div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        &>p:first-child {
+            font-size: small;
+        }
+        &>p:last-child {
+            vertical-align: middle;
+            font-size: large;
+        }
+    }
+}
+
 /* ------- */
 #receiver {
     display: flex;
@@ -196,6 +230,7 @@ label[for="file_input"] {
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 10em;
     &>h3 {
         margin-bottom: 0;
     }

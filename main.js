@@ -123,12 +123,32 @@ if (id_param) {
 
     /** @type {HTMLInputElement} */
     const file_input = document.getElementById("file_input");
+    /** @type {HTMLLabelElement} */
+    const file_input_label = document.getElementById("file_input_label");
     /** @type {HTMLParagraphElement} */
     const file_label_name = document.getElementById("file_label_name");
     /** @type {HTMLInputElement} */
     const start = document.getElementById("sender_start")
     /** @type {HTMLDivElement} */
     const link_div = document.getElementById("link_div");
+
+    var in_progress_transfers = 0;
+    var completed_transfers = 0;
+    var failed_transfers = 0;
+
+    /** @type {HTMLDivElement} */
+    const sender_connections_div = document.getElementById("sender_connections");
+    /** @type {HTMLParagraphElement} */
+    const ongoing_connections_p = document.getElementById("ongoing_connections_num");
+    /** @type {HTMLParagraphElement} */
+    const finished_connections_p = document.getElementById("finished_connections_num");
+    /** @type {HTMLParagraphElement} */
+    const failed_connections_p = document.getElementById("failed_connections_num");
+    function update_current_transfers() {
+        ongoing_connections_p.textContent = in_progress_transfers.toString();
+        finished_connections_p.textContent = completed_transfers.toString();
+        failed_connections_p.textContent = failed_transfers.toString();
+    }
 
     // Selected file can either be from file input, or from drag-and-drop
     /** @type {File?} */
@@ -224,6 +244,7 @@ if (id_param) {
 
         start.hidden = true;
         link_div.hidden = false;
+        sender_connections_div.hidden = false;
     }
 
     function click_copy_link() {
@@ -246,6 +267,7 @@ if (id_param) {
         }
         start.disabled = true;
         file_input.disabled = true;
+        file_input_label.setAttribute("disabled", "");
         let file = selected_file;
         console.log("Sending file: ", file);
 
@@ -254,10 +276,20 @@ if (id_param) {
             set_download_link(id);
 
             peer.on("connection", (conn) => {
+                in_progress_transfers += 1;
+                update_current_transfers()
                 console.log(conn);
-                conn.on("close", () => { console.log(`connection with ${conn.peer} closed.`); });
+                conn.on("close", () => {
+                    // TODO: hopefully this means we are done.
+                    in_progress_transfers -= 1;
+                    completed_transfers += 1;
+                    update_current_transfers()
+                    console.log(`connection with ${conn.peer} closed.`);
+                });
                 conn.on("error", (err) => {
-                    // TODO: should we report that (one of) the receiver connections failed?
+                    in_progress_transfers -= 1;
+                    failed_transfers += 1;
+                    update_current_transfers()
                     console.error("connection errored:", err);
                 });
                 // TODO: implement connection count ui
