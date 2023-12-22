@@ -72,18 +72,16 @@
         </div>
         <div id="receiver" hidden>
             <div id="receiver_error_screen" class="receiver_display_option" hidden>
-                <h3>Something went wrong:</h3>&nbsp;
-                <p id="error_message">(no error message)</p>
-                <br>
+                <h3>Oh no! Something went wrong.</h3>
+                <div id="receiver_error_message"><i class="fa-solid fa-triangle-exclamation" style="color: red;"></i><div><p id="error_message">(no error message)</p></div></div>
                 <a class="site_link">Upload a new file</a>
             </div>
             <div id="receiver_loading" class="receiver_display_option">
                 <h3>Fetching file...</h3>
-                <i class="fa-solid fa-gear fa-spin"></i>
-                
+                <i class="fa-solid fa-gear fa-spin" style="margin: 1em;"></i>
             </div>
             <div id="receiver_completed" class="receiver_display_option" hidden>
-                <h3>Download complete.</h3>&nbsp;<a class="site_link">Upload a new file</a>
+                <h3>Download complete.</h3><a class="site_link">Upload a new file</a>
             </div>
             <div id="fetcher_log"></div>
         </div>

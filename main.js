@@ -37,12 +37,31 @@ if (id_param) {
         }
     }
 
+    const error_context = {
+        "browser-incompatible": "Maybe a different browser.",
+        "disconnected": "Close and re-open the tab.",
+        "invalid-id": "This URL is invalid. Ask the sender for a new one.",
+        //"invalid-key": "That's strange.",
+        //"network": "",
+        "peer-unavailable": "This URL is invalid. Perhaps the sender closed their browser?",
+        //"ssl-unavailable": "",
+        //"server-error": "",
+        "socket-error": "Please try again.",
+        "socket-closed": "Please try again.",
+        "unavailable-id": "Please try again.",
+        "webrtc": "An internal WebRTC error occurred."
+    }
+
     function set_receiver_error(message = "") {
         clear_receiver_options()
         if ((typeof message) != "string" || message.length == 0) {
             document.getElementById("error_message").textContent = "(no error message)";
         } else {
-            document.getElementById("error_message").textContent = message;
+            let text = "Error: " + message;
+            if (error_context[message]) {
+                text += `<br><em>${error_context[message]}</em>`
+            }
+            document.getElementById("error_message").innerHTML = text;
         }
         document.getElementById("receiver_error_screen").hidden = false;
     }
