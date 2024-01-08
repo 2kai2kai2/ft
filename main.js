@@ -81,8 +81,12 @@ if (id_param) {
 
         conn.on("open", () => {
             add_to_fetcher_log("Connection established...");
+            window.onbeforeunload = ((ev) => {
+                conn.send("bad_exit");
+            })
         });
         conn.on("close", () => {
+            window.onbeforeunload = null;
             add_to_fetcher_log("Connection closed.");
         });
         conn.on("error", (err) => {
@@ -90,6 +94,7 @@ if (id_param) {
                 add_to_fetcher_log(`Connection error occurred: ${err.type}`);
                 set_receiver_error()
             }
+            window.onbeforeunload = null;
             console.error("Potential Post-Receive Error:", err)
         });
         conn.on("data", (/** @type {FileTransfer} */ data) => {
@@ -279,6 +284,18 @@ if (id_param) {
                 in_progress_transfers += 1;
                 update_current_transfers()
                 console.log(conn);
+                console.log(peer.connections)
+                conn.on("data", (data) => {
+                    if (data === "bad_exit") {
+                        // This is an application error where the receiver's tab was closed before it finished.
+                        in_progress_transfers -= 1;
+                        failed_transfers += 1;
+                        update_current_transfers();
+                        console.error("Receiver canceled");
+                    } else {
+                        console.log(data);
+                    }
+                });
                 conn.on("close", () => {
                     // TODO: hopefully this means we are done.
                     in_progress_transfers -= 1;
@@ -289,7 +306,7 @@ if (id_param) {
                 conn.on("error", (err) => {
                     in_progress_transfers -= 1;
                     failed_transfers += 1;
-                    update_current_transfers()
+                    update_current_transfers();
                     console.error("connection errored:", err);
                 });
                 // TODO: implement connection count ui
