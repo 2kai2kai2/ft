@@ -2,52 +2,45 @@
 
 <head>
     <title>p2p File Transfer</title>
-    <link rel="canonical" href="https://ft.2ka.io">
+    <link rel="canonical" href="https://ft.2ka.io" />
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@gh-pages/qrcode.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="main.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="main.css" />
 </head>
 
 <body>
     <article>
         <div id="description_div">
             <h1>Direct File Transfer</h1>
-            <p>Directly send files without uploading to a server. As long as the sender has the web page open, the file
-                will
-                be available to download directly from them using a magic link.<br>Read <a onclick="click_read_more();"
-                    style="color:blue; cursor:pointer">more...</a></p>
+            <p>
+                Directly send files without uploading to a server. As long as the sender has the web
+                page open, the file will be available to download directly from them using a magic
+                link.<br />Read
+                <a onclick="click_read_more();" style="color: blue; cursor: pointer">more...</a>
+            </p>
             <div id="more_info_container">
                 <p id="more_info">
-                    This site uses <a href="https://webrtc.org/">WebRTC</a>, which is a widely-supported internet
-                    standard
-                    for
-                    peer-to-peer data transfer.
-                    In a traditional file-sharing service, you upload your data to a server, then have your
-                    recipients
-                    download
-                    from the service's server
-                    (many excellent services of this variety exist, from <a href="https://file.io">file.io</a> to <a
-                        href="https://drive.google.com">Google Drive</a>).
-                    HOWEVER, if you just need to send a file immediately and aren't interested in long-term storage,
-                    this
-                    site
-                    is one of your best choices.
-                    Unlike traditional file-sharing services, this website allows you to directly transfer files
-                    from
-                    the
-                    sender
-                    to the recipient, without a server as middle-man.
-                    Removing the server as middle-man allows file transfers to be faster and (in some cases) cheaper
-                    overall.
-                    This website currently uses the <a href="https://peerjs.com/">peer.js</a> library for WebRTC.
-                    As a result, the only server involved in your file transfers is the minimal peer.js PeerServer
-                    Cloud
-                    service,
-                    which is only required to initiate the connection between the sender and receivers' web
-                    browsers.
-                    Your sent files do not pass through this server.
-                    <br>
+                    This site uses <a href="https://webrtc.org/">WebRTC</a>, which is a
+                    widely-supported internet standard for peer-to-peer data transfer. In a
+                    traditional file-sharing service, you upload your data to a server, then have
+                    your recipients download from the service's server (many excellent services of
+                    this variety exist, from <a href="https://file.io">file.io</a> to
+                    <a href="https://drive.google.com">Google Drive</a>). HOWEVER, if you just need
+                    to send a file immediately and aren't interested in long-term storage, this site
+                    is one of your best choices. Unlike traditional file-sharing services, this
+                    website allows you to directly transfer files from the sender to the recipient,
+                    without a server as middle-man. Removing the server as middle-man allows file
+                    transfers to be faster and (in some cases) cheaper overall. This website
+                    currently uses the <a href="https://peerjs.com/">peer.js</a> library for WebRTC.
+                    As a result, the only server involved in your file transfers is the minimal
+                    peer.js PeerServer Cloud service, which is only required to initiate the
+                    connection between the sender and receivers' web browsers. Your sent files do
+                    not pass through this server.
+                    <br />
                 </p>
             </div>
         </div>
@@ -61,7 +54,13 @@
                 <p id="file_label_name">Select File</p>
             </label>
             <input type="file" id="file_input" />
-            <input type="button" value="Generate Link" id="sender_start" onclick="start_connections();" disabled />
+            <input
+                type="button"
+                value="Generate Link"
+                id="sender_start"
+                onclick="start_connections();"
+                disabled
+            />
             <div id="link_div" hidden>
                 <div id="link_copy_box" onclick="click_copy_link();">
                     <p id="link_copy">not yet loaded</p>
@@ -87,15 +86,19 @@
         <div id="receiver" hidden>
             <div id="receiver_error_screen" class="receiver_display_option" hidden>
                 <h3>Oh no! Something went wrong.</h3>
-                <div id="receiver_error_message"><i class="fa-solid fa-triangle-exclamation" style="color: red;"></i><div><p id="error_message">(no error message)</p></div></div>
+                <div id="receiver_error_message">
+                    <i class="fa-solid fa-triangle-exclamation" style="color: red"></i>
+                    <div><p id="error_message">(no error message)</p></div>
+                </div>
                 <a class="site_link">Upload a new file</a>
             </div>
             <div id="receiver_loading" class="receiver_display_option">
                 <h3>Fetching file...</h3>
-                <i class="fa-solid fa-gear fa-spin" style="margin: 1em;"></i>
+                <i class="fa-solid fa-gear fa-spin" style="margin: 1em"></i>
             </div>
             <div id="receiver_completed" class="receiver_display_option" hidden>
-                <h3>Download complete.</h3><a class="site_link">Upload a new file</a>
+                <h3>Download complete.</h3>
+                <a class="site_link">Upload a new file</a>
             </div>
             <div id="fetcher_log"></div>
         </div>
@@ -107,8 +110,10 @@
             <a href="https://2ka.io"><i class="fa-solid fa-house"></i></a>
         </div>
         <p>© Kai Orita 2023</p>
-        <p>This software is provided as-is, and has no warranty or guarantee of security. Do not use for sensitive
-            information.</p>
+        <p>
+            This software is provided as-is, and has no warranty or guarantee of security. Do not
+            use for sensitive information.
+        </p>
     </footer>
     <script src="./main.js"></script>
 </body>

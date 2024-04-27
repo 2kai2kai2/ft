@@ -1,5 +1,5 @@
 const params = new URL(document.URL).searchParams;
-const id_param = params.get("id")
+const id_param = params.get("id");
 
 /**
  * @typedef {Object} FileTransfer
@@ -49,30 +49,30 @@ if (id_param) {
         "socket-error": "Please try again.",
         "socket-closed": "Please try again.",
         "unavailable-id": "Please try again.",
-        "webrtc": "An internal WebRTC error occurred."
-    }
+        "webrtc": "An internal WebRTC error occurred.",
+    };
 
     function set_receiver_error(message = "") {
-        clear_receiver_options()
-        if ((typeof message) != "string" || message.length == 0) {
+        clear_receiver_options();
+        if (typeof message != "string" || message.length == 0) {
             document.getElementById("error_message").textContent = "(no error message)";
         } else {
             let text = "Error: " + message;
             if (error_context[message]) {
-                text += `<br><em>${error_context[message]}</em>`
+                text += `<br><em>${error_context[message]}</em>`;
             }
             document.getElementById("error_message").innerHTML = text;
         }
         document.getElementById("receiver_error_screen").hidden = false;
     }
 
-    add_to_fetcher_log("Starting...")
+    add_to_fetcher_log("Starting...");
     var peer = new Peer();
     peer.on("close", () => {
         add_to_fetcher_log("Closed p2p identity");
     });
     peer.on("error", (err) => {
-        set_receiver_error(err.type)
+        set_receiver_error(err.type);
         add_to_fetcher_log(`p2p identity error occurred: ${err.type}`);
     });
     peer.on("open", () => {
@@ -81,9 +81,9 @@ if (id_param) {
 
         conn.on("open", () => {
             add_to_fetcher_log("Connection established...");
-            window.onbeforeunload = ((ev) => {
+            window.onbeforeunload = (ev) => {
                 conn.send("bad_exit");
-            })
+            };
         });
         conn.on("close", () => {
             window.onbeforeunload = null;
@@ -92,10 +92,10 @@ if (id_param) {
         conn.on("error", (err) => {
             if (!finished) {
                 add_to_fetcher_log(`Connection error occurred: ${err.type}`);
-                set_receiver_error()
+                set_receiver_error();
             }
             window.onbeforeunload = null;
-            console.error("Potential Post-Receive Error:", err)
+            console.error("Potential Post-Receive Error:", err);
         });
         conn.on("data", (/** @type {FileTransfer} */ data) => {
             add_to_fetcher_log("Data received...");
@@ -107,17 +107,17 @@ if (id_param) {
 
             add_to_fetcher_log("Saving file...");
             a.dispatchEvent(
-                new MouseEvent('click', {
+                new MouseEvent("click", {
                     bubbles: true,
                     cancelable: true,
-                    view: window
+                    view: window,
                 })
             );
             document.body.removeChild(a);
 
-            clear_receiver_options()
+            clear_receiver_options();
             document.getElementById("receiver_completed").hidden = false;
-            conn.close()
+            conn.close();
         });
     });
 } else {
@@ -133,7 +133,7 @@ if (id_param) {
     /** @type {HTMLParagraphElement} */
     const file_label_name = document.getElementById("file_label_name");
     /** @type {HTMLInputElement} */
-    const start = document.getElementById("sender_start")
+    const start = document.getElementById("sender_start");
     /** @type {HTMLDivElement} */
     const link_div = document.getElementById("link_div");
 
@@ -179,20 +179,20 @@ if (id_param) {
 
     file_input.onchange = () => {
         new_selected_file(file_input.files.item(0));
-    }
+    };
 
     /** @type {HTMLDivElement} */
     const drag_overlay = document.getElementById("dragover_overlay");
     document.body.ondragenter = (ev) => {
         if (file_input.disabled) {
-            return
+            return;
         }
         console.log("dragenter", ev.target);
         if (ev.dataTransfer.types.includes("Files")) {
             drag_overlay.classList.add("active");
             ev.preventDefault();
         }
-    }
+    };
     // if we any drag leave, then set a timeout
     // if we have a dragover event before then, that means we didn't actually leave
     /** @type {number | null} */
@@ -201,7 +201,7 @@ if (id_param) {
     document.body.ondragleave = (ev) => {
         console.log(ev.target.tagName);
         if (file_input.disabled) {
-            return
+            return;
         }
         console.log("dragleave", ev.target);
         if (drag_leave_timeout === null) {
@@ -210,10 +210,10 @@ if (id_param) {
             }, 100);
             // I really hope this is enough time
         }
-    }
+    };
     document.body.ondragover = (ev) => {
         if (file_input.disabled) {
-            return
+            return;
         }
         if (ev.dataTransfer.types.includes("Files")) {
             clearTimeout(drag_leave_timeout); // does nothing if already null
@@ -222,7 +222,7 @@ if (id_param) {
             drag_overlay.classList.add("active"); // just in case it accidentally got removed
             ev.preventDefault();
         }
-    }
+    };
     document.body.ondrop = (ev) => {
         if (file_input.disabled || ev.dataTransfer.files.length == 0) {
             return;
@@ -232,8 +232,8 @@ if (id_param) {
         clearTimeout(drag_leave_timeout); // does nothing if already null
         drag_leave_timeout = null;
         drag_overlay.classList.remove("active");
-        ev.preventDefault()
-    }
+        ev.preventDefault();
+    };
 
     /** @param {String} uuid */
     function set_download_link(uuid) {
@@ -253,7 +253,7 @@ if (id_param) {
     }
 
     function click_copy_link() {
-        navigator.clipboard.writeText(document.getElementById('link_copy').textContent).then(
+        navigator.clipboard.writeText(document.getElementById("link_copy").textContent).then(
             () => {
                 const icon = document.getElementById("link_copy_icon");
                 icon.classList.replace("fa-clone", "fa-check");
@@ -282,9 +282,9 @@ if (id_param) {
 
             peer.on("connection", (conn) => {
                 in_progress_transfers += 1;
-                update_current_transfers()
+                update_current_transfers();
                 console.log(conn);
-                console.log(peer.connections)
+                console.log(peer.connections);
                 conn.on("data", (data) => {
                     if (data === "bad_exit") {
                         // This is an application error where the receiver's tab was closed before it finished.
@@ -300,7 +300,7 @@ if (id_param) {
                     // TODO: hopefully this means we are done.
                     in_progress_transfers -= 1;
                     completed_transfers += 1;
-                    update_current_transfers()
+                    update_current_transfers();
                     console.log(`connection with ${conn.peer} closed.`);
                 });
                 conn.on("error", (err) => {
@@ -312,7 +312,7 @@ if (id_param) {
                 // TODO: implement connection count ui
                 conn.once("open", () => {
                     console.log("sending to", conn.connectionId);
-                    conn.send({ "name": file.name, "content": file });
+                    conn.send({ name: file.name, content: file });
                     console.log("done");
                 });
             });
