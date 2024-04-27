@@ -67,7 +67,7 @@ if (id_param) {
     }
 
     add_to_fetcher_log("Starting...");
-    var peer = new Peer();
+    const peer = new Peer();
     peer.on("close", () => {
         add_to_fetcher_log("Closed p2p identity");
     });
@@ -77,7 +77,14 @@ if (id_param) {
     });
     peer.on("open", () => {
         add_to_fetcher_log("Identity established, trying to connect...");
-        var conn = peer.connect(id_param);
+        let uuid;
+        try {
+            uuid = base64_to_uuid(id_param);
+        } catch {
+            set_receiver_error("invalid-id");
+            return;
+        }
+        const conn = peer.connect(uuid);
 
         conn.on("open", () => {
             add_to_fetcher_log("Connection established...");
@@ -111,7 +118,7 @@ if (id_param) {
                     bubbles: true,
                     cancelable: true,
                     view: window,
-                })
+                }),
             );
             document.body.removeChild(a);
 
@@ -237,7 +244,7 @@ if (id_param) {
 
     /** @param {String} uuid */
     function set_download_link(uuid) {
-        const link = document.baseURI + "?id=" + uuid;
+        const link = `${document.baseURI}?id=${uuid_to_base64(uuid)}`;
 
         /** @type {HTMLParagraphElement} */
         const link_text = document.getElementById("link_copy");
@@ -261,7 +268,7 @@ if (id_param) {
             },
             () => {
                 console.error("Failed to copy to clipboard.");
-            }
+            },
         );
     }
 
@@ -274,7 +281,7 @@ if (id_param) {
         file_input.disabled = true;
         file_input_label.setAttribute("disabled", "");
         let file = selected_file;
-        console.log("Sending file: ", file);
+        console.log("Sharing file: ", file);
 
         var peer = new Peer();
         peer.once("open", (id) => {
@@ -321,6 +328,6 @@ if (id_param) {
 }
 
 // insert our base url into all <a> elements with class `site_link`
-for (el of document.getElementsByClassName("site_link")) {
+for (const el of document.getElementsByClassName("site_link")) {
     el.href = document.URL.split("?")[0];
 }

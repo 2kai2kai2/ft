@@ -116,8 +116,11 @@ label[for="file_input"] {
         font-weight: bolder;
         transition: font-weight 0.5s linear;
     }
-    transition: background-color 0.25s ease-in-out, border-color 0.2s ease-in-out,
-        height 0.5s linear, color 0.5s linear;
+    transition:
+        background-color 0.25s ease-in-out,
+        border-color 0.2s ease-in-out,
+        height 0.5s linear,
+        color 0.5s linear;
     &[disabled] {
         height: 3em;
         color: rgb(100, 100, 100);
@@ -168,7 +171,9 @@ label[for="file_input"] {
         border-width: 1px;
         border-color: grey;
         background-color: rgb(200, 200, 200);
-        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        transition:
+            background-color 0.2s ease-in-out,
+            border-color 0.2s ease-in-out;
         display: inline;
 
         &.fa-check {
